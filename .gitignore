@@ -3,4 +3,5 @@ env
 
 .ruff_cache
 
+data/raw/olist_geolocation_dataset.csv
 __pycache__
