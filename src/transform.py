@@ -240,26 +240,35 @@ def build_order_documents(
 
     return documents
 
-
-def main() -> None:
-    """Construit les documents MongoDB Olist."""
+def build_documents() -> list[dict[str, object]]:
+    """Charge et transforme les données Olist en documents MongoDB."""
 
     data = load_data()
 
-    orders = prepare_orders(data["orders"])
+    orders = prepare_orders(
+        data["orders"]
+    )
 
     items = prepare_items(
         data["items"],
         data["products"],
     )
 
-    reviews = prepare_reviews(data["reviews"])
+    reviews = prepare_reviews(
+        data["reviews"]
+    )
 
-    items_by_order = build_items_by_order(items)
+    items_by_order = build_items_by_order(
+        items
+    )
 
-    payments_by_order = build_payments_by_order(data["payments"])
+    payments_by_order = build_payments_by_order(
+        data["payments"]
+    )
 
-    reviews_by_order = build_reviews_by_order(reviews)
+    reviews_by_order = build_reviews_by_order(
+        reviews
+    )
 
     documents = build_order_documents(
         orders=orders,
@@ -269,8 +278,12 @@ def main() -> None:
         reviews_by_order=reviews_by_order,
     )
 
-    print("\nNOMBRE DE COMMANDES")
-    print(len(orders))
+    return documents
+
+def main() -> None:
+    """Teste la construction des documents MongoDB."""
+
+    documents = build_documents()
 
     print("\nNOMBRE DE DOCUMENTS CRÉÉS")
     print(len(documents))
