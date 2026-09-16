@@ -40,6 +40,7 @@ def analyse_file(filename: str) -> None:
 
     print("\n" + "=" * 50 + "\n")
 
+
 def analyse_relations() -> None:
     """Analyse les relations entre les fichiers Olist."""
 
@@ -84,50 +85,41 @@ def analyse_relations() -> None:
 
     print("\nIntégrité des relations :")
 
-    missing_customers = ~orders["customer_id"].isin(
-        customers["customer_id"]
-    )
+    missing_customers = ~orders["customer_id"].isin(customers["customer_id"])
 
     print(
         "Orders avec customer_id inexistant :",
         missing_customers.sum(),
     )
 
-    missing_item_orders = ~items["order_id"].isin(
-        orders["order_id"]
-    )
+    missing_item_orders = ~items["order_id"].isin(orders["order_id"])
 
     print(
         "Items avec order_id inexistant :",
         missing_item_orders.sum(),
     )
 
-    missing_products = ~items["product_id"].isin(
-        products["product_id"]
-    )
+    missing_products = ~items["product_id"].isin(products["product_id"])
 
     print(
         "Items avec product_id inexistant :",
         missing_products.sum(),
     )
 
-    missing_payment_orders = ~payments["order_id"].isin(
-        orders["order_id"]
-    )
+    missing_payment_orders = ~payments["order_id"].isin(orders["order_id"])
 
     print(
         "Paiements avec order_id inexistant :",
         missing_payment_orders.sum(),
     )
 
-    missing_review_orders = ~reviews["order_id"].isin(
-        orders["order_id"]
-    )
+    missing_review_orders = ~reviews["order_id"].isin(orders["order_id"])
 
     print(
         "Reviews avec order_id inexistant :",
         missing_review_orders.sum(),
     )
+
 
 def main() -> None:
     """Lance les analyses du dataset Olist."""
