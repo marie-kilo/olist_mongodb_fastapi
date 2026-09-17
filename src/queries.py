@@ -60,6 +60,14 @@ def get_order_statuses(
     return sorted(collection.distinct("status"))
 
 
+def get_customer_states(
+    collection: Collection,
+) -> list[str]:
+    """Retourne les États présents dans les commandes."""
+
+    return sorted(collection.distinct("customer.state"))
+
+
 def main() -> None:
     """Teste la recherche d'une commande."""
 
@@ -150,6 +158,13 @@ def main() -> None:
 
     for status in statuses:
         print(status)
+
+    print("\nÉTATS DISPONIBLES")
+
+    states = get_customer_states(collection)
+
+    for state in states:
+        print(state)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, Path, Query
+from fastapi import FastAPI, HTTPException, Query
 
 from src.aggregations import (
     sales_by_category,
@@ -36,6 +36,36 @@ OrderStatus = Literal[
     "processing",
     "shipped",
     "unavailable",
+]
+
+StateCode = Literal[
+    "AC",
+    "AL",
+    "AM",
+    "AP",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MG",
+    "MS",
+    "MT",
+    "PA",
+    "PB",
+    "PE",
+    "PI",
+    "PR",
+    "RJ",
+    "RN",
+    "RO",
+    "RR",
+    "RS",
+    "SC",
+    "SE",
+    "SP",
+    "TO",
 ]
 
 
@@ -114,11 +144,7 @@ def get_orders_by_customer(
 
 @app.get("/states/{state}/orders")
 def get_orders_by_state(
-    state: str = Path(
-        ...,
-        min_length=2,
-        max_length=2,
-    ),
+    state: StateCode,
     limit: int = Query(
         default=10,
         ge=1,
@@ -129,7 +155,7 @@ def get_orders_by_state(
 
     orders = find_orders_by_state(
         collection,
-        state=state.upper(),
+        state=state,
         limit=limit,
     )
 
