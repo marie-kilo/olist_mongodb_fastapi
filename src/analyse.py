@@ -121,6 +121,81 @@ def analyse_relations() -> None:
     )
 
 
+def analyse_business_quality() -> None:
+    """Vérifie quelques incohérences métier utiles au projet."""
+
+    orders = pd.read_csv(DATA_DIR / "olist_orders_dataset.csv")
+    items = pd.read_csv(DATA_DIR / "olist_order_items_dataset.csv")
+    payments = pd.read_csv(DATA_DIR / "olist_order_payments_dataset.csv")
+    reviews = pd.read_csv(DATA_DIR / "olist_order_reviews_dataset.csv")
+
+    print("\n" + "=" * 70)
+    print("ANALYSE QUALITÉ MÉTIER")
+    print("=" * 70)
+
+    # 1. Commandes livrées sans date de livraison client
+    delivered_without_date = (orders["order_status"] == "delivered") & (
+        orders["order_delivered_customer_date"].isna()
+    )
+
+    print(
+        "\nCommandes 'delivered' sans date de livraison :",
+        delivered_without_date.sum(),
+    )
+
+    if delivered_without_date.any():
+        print("\nDétail des commandes 'delivered' sans date de livraison :")
+
+        columns = [
+            "order_id",
+            "order_status",
+            "order_purchase_timestamp",
+            "order_approved_at",
+            "order_delivered_carrier_date",
+            "order_delivered_customer_date",
+            "order_estimated_delivery_date",
+        ]
+
+    print(
+        orders.loc[
+            delivered_without_date,
+            columns,
+        ].to_string(index=False)
+    )
+
+    # 2. Prix négatifs
+    negative_prices = items["price"] < 0
+
+    print(
+        "Items avec prix négatif :",
+        negative_prices.sum(),
+    )
+
+    # 3. Frais de livraison négatifs
+    negative_freight = items["freight_value"] < 0
+
+    print(
+        "Items avec freight_value négatif :",
+        negative_freight.sum(),
+    )
+
+    # 4. Paiements négatifs
+    negative_payments = payments["payment_value"] < 0
+
+    print(
+        "Paiements avec valeur négative :",
+        negative_payments.sum(),
+    )
+
+    # 5. Notes en dehors de l'échelle attendue
+    invalid_review_scores = ~reviews["review_score"].between(1, 5)
+
+    print(
+        "Reviews avec score hors de 1 à 5 :",
+        invalid_review_scores.sum(),
+    )
+
+
 def main() -> None:
     """Lance les analyses du dataset Olist."""
 
@@ -128,6 +203,7 @@ def main() -> None:
         analyse_file(filename)
 
     analyse_relations()
+    analyse_business_quality()
 
 
 if __name__ == "__main__":
