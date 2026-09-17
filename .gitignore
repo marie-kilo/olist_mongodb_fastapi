@@ -1,7 +1,25 @@
-env
+# Environnement Python
+env/
+venv/
+.venv/
+
+# Variables d'environnement
 .env
 
-.ruff_cache
+# Cache Python
+__pycache__/
+*.pyc
 
+# Pytest
+.pytest_cache/
+
+# Ruff
+.ruff_cache/
+
+# Données brutes
 data/raw/olist_geolocation_dataset.csv
-__pycache__
+
+# Fichiers système / IDE
+.vscode/
+.idea/
+.DS_Store
