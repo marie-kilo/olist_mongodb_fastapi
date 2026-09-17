@@ -52,6 +52,14 @@ def find_orders_by_state(
     return list(cursor)
 
 
+def get_order_statuses(
+    collection: Collection,
+) -> list[str]:
+    """Retourne les statuts de commande présents dans MongoDB."""
+
+    return sorted(collection.distinct("status"))
+
+
 def main() -> None:
     """Teste la recherche d'une commande."""
 
@@ -135,6 +143,13 @@ def main() -> None:
             "-",
             order["customer"]["state"],
         )
+
+    print("\nSTATUTS DISPONIBLES")
+
+    statuses = get_order_statuses(collection)
+
+    for status in statuses:
+        print(status)
 
 
 if __name__ == "__main__":
