@@ -398,6 +398,13 @@ customer.customer_unique_id
 customer.state
 ```
 
+Les fichiers qui ne répondent pas directement aux usages retenus, comme la
+géolocalisation, les vendeurs ou la traduction des catégories, ne sont pas
+intégrés au document final.
+
+Ce choix permet d'éviter de surcharger les documents avec des informations
+qui ne sont pas utilisées par les routes actuelles de l'API.
+
 ---
 
 # 9. Transformation des données
@@ -485,7 +492,44 @@ MONGO_COLLECTION=orders
 MONGO_AUTH_SOURCE=admin
 ```
 
+### Création de l'utilisateur MongoDB
+
+Si l'utilisateur MongoDB n'existe pas encore, il peut être créé dans la base
+d'authentification `admin`.
+
+Depuis `mongosh` :
+
+```javascript
+use admin
+
+db.createUser({
+  user: "admin",
+  pwd: "votre_mot_de_passe",
+  roles: [
+    {
+      role: "readWrite",
+      db: "olist"
+    }
+  ]
+})
+```
+
+Le fichier `.env` doit ensuite contenir les mêmes informations :
+
+```env
+MONGO_USER=admin
+MONGO_PASSWORD=votre_mot_de_passe
+MONGO_HOST=localhost
+MONGO_PORT=27017
+MONGO_DB=olist
+MONGO_COLLECTION=orders
+MONGO_AUTH_SOURCE=admin
+```
+
+Le mot de passe réel ne doit jamais être ajouté au dépôt Git.
+
 ---
+
 
 ## 10.2 Import reproductible
 
@@ -550,12 +594,13 @@ olist_mongodb_fastapi/
 ├── tests/
 │   └── test_api.py
 │
-├── .env
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
+> Le fichier `.env` est créé localement à partir de `.env.example`.  
+> Il contient les identifiants de connexion et n'est pas versionné.
 
 ---
 
@@ -1943,6 +1988,17 @@ Ils utilisent :
 pytest
 FastAPI TestClient
 ```
+
+Avant d'exécuter les tests, MongoDB doit être démarré, la configuration
+`.env` doit être valide et les données Olist doivent avoir été importées
+avec :
+
+```bash
+python -m src.database
+```
+Ainsi personne ne se demande pourquoi un test échoue sur une base vide.
+
+---
 
 Pour les exécuter :
 
