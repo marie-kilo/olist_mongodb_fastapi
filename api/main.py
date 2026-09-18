@@ -95,7 +95,11 @@ StateCode = Literal[
 ]
 
 
-@app.get("/")
+@app.get(
+    "/",
+    tags=["Health"],
+    summary="Vérifier le fonctionnement de l'API",
+)
 def root() -> dict:
     """Vérifie que l'API fonctionne."""
 
