@@ -156,12 +156,12 @@ def analyse_business_quality() -> None:
             "order_estimated_delivery_date",
         ]
 
-    print(
-        orders.loc[
-            delivered_without_date,
-            columns,
-        ].to_string(index=False)
-    )
+        print(
+            orders.loc[
+                delivered_without_date,
+                columns,
+            ].to_string(index=False)
+        )
 
     # 2. Prix négatifs
     negative_prices = items["price"] < 0
