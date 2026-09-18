@@ -16,10 +16,36 @@ from src.queries import (
     find_orders_by_status,
 )
 
+tags_metadata = [
+    {
+        "name": "Health",
+        "description": "Vérification du fonctionnement de l'API.",
+    },
+    {
+        "name": "Orders",
+        "description": "Consultation des commandes Olist.",
+    },
+    {
+        "name": "Customers",
+        "description": "Consultation des commandes par client.",
+    },
+    {
+        "name": "States",
+        "description": "Consultation des commandes par État.",
+    },
+    {
+        "name": "Analytics",
+        "description": "Résultats agrégés calculés à partir des données Olist.",
+    },
+]
 app = FastAPI(
     title="Olist MongoDB API",
-    description="API REST permettant de consulter les données Olist.",
+    description=(
+        "API REST permettant de consulter et analyser "
+        "les données e-commerce Olist stockées dans MongoDB."
+    ),
     version="1.0.0",
+    openapi_tags=tags_metadata,
 )
 
 
@@ -76,7 +102,13 @@ def root() -> dict:
     return {"message": "Olist API is running"}
 
 
-@app.get("/orders/{order_id}")
+@app.get(
+    "/orders/{order_id}",
+    tags=["Orders"],
+    summary="Rechercher une commande",
+    description="Retourne une commande complète à partir de son order_id.",
+    responses={404: {"description": "Commande introuvable"}},
+)
 def get_order(order_id: str) -> dict:
     """Retourne une commande à partir de son identifiant."""
 
@@ -96,7 +128,11 @@ def get_order(order_id: str) -> dict:
     return order
 
 
-@app.get("/orders/status/{status}")
+@app.get(
+    "/orders/status/{status}",
+    tags=["Orders"],
+    summary="Rechercher les commandes par statut",
+)
 def get_orders_by_status(
     status: OrderStatus,
     limit: int = Query(
@@ -119,7 +155,11 @@ def get_orders_by_status(
     return orders
 
 
-@app.get("/customers/{customer_unique_id}/orders")
+@app.get(
+    "/customers/{customer_unique_id}/orders",
+    tags=["Customers"],
+    summary="Consulter l'historique d'un client",
+)
 def get_orders_by_customer(
     customer_unique_id: str,
     limit: int = Query(
@@ -142,7 +182,11 @@ def get_orders_by_customer(
     return orders
 
 
-@app.get("/states/{state}/orders")
+@app.get(
+    "/states/{state}/orders",
+    tags=["States"],
+    summary="Rechercher les commandes par État",
+)
 def get_orders_by_state(
     state: StateCode,
     limit: int = Query(
@@ -165,7 +209,11 @@ def get_orders_by_state(
     return orders
 
 
-@app.get("/analytics/categories/sales")
+@app.get(
+    "/analytics/categories/sales",
+    tags=["Analytics"],
+    summary="Analyser les ventes par catégorie",
+)
 def get_sales_by_category(
     limit: int = Query(
         default=10,
@@ -181,7 +229,11 @@ def get_sales_by_category(
     )
 
 
-@app.get("/analytics/states/sales")
+@app.get(
+    "/analytics/states/sales",
+    tags=["Analytics"],
+    summary="Analyser les ventes par État",
+)
 def get_sales_by_state(
     limit: int = Query(
         default=10,
